@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: micropy
+  labels:
+    app: micropy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: micropy
+  template:
+    metadata:
+      labels:
+        app: micropy
+    spec:
+      containers:
+      - name: micropy
+        image: pmittal77/micropy:1.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: FLASK_ENV
+          value: "production"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: micropy-service
+  labels:
+    app: micropy
+spec:
+  selector:
+    app: micropy
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 8080
+  type: LoadBalancer
